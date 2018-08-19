@@ -18,38 +18,43 @@ function optionModel(id,name){
     self.name = ko.observable(name);
 }
 
-function detailModel(address, url, description, image) {
+function detailModel(name, address, url, description, image) {
     var self = this;
-    self.address = ko.observable(address);
+    self.name = ko.observable(name);
+    self.address = ko.observableArray(address);
     self.url = ko.observable(url);
     self.description = ko.observable(description);
     self.image = ko.observable(image);
-    self.displayFlag = ko.observable(ko.computed(function() {
-        return (self.description()||self.url()||self.image()||self.address());
-    }, this));
 }
 
-function ViewListElement(name, marker) {
+function ViewListElement(name, marker, info, map) {
     var self = this;
     self.name = ko.observable(name);
     self.marker = ko.observable(marker);
-    self.detail = ko.observable(new detailModel(null,null,null,null));
-    self.detailFlag = ko.observable(false);
-    self.detailExisit = ko.observable(false);
+    self.info = ko.observable(info);
+    self.map = ko.observable(map);
+    self.detail = ko.observable(new detailModel(null,null,null,null,null));
+    // searched Flag means searched or not.
+    self.searchedFlag = ko.observable(false);
+    // display Flag means display or not.
+    self.displayFlag = ko.observable(false);
+    // results Flag means results exisits or not.
+    self.resultFlag = ko.observable(false);
     self.showDetails = function() {
-        self.detailFlag(!self.detailFlag());
+        self.displayFlag(true);
         // not find yet.
-        if(self.detailExisit() == false) {
+        if(self.searchedFlag() == false) {
             console.log('need to fetch from four squard');
-            // get avenue id 
+            // get avenue id
             // get detail
             getVenuesId(self);
-
+            self.searchedFlag(true);
         }
         // have already found. things go as before.
         else {
-            console.log('already found');
+            console.log('have already searched');
         }
+        self.info().setMap(self.map());
     };
     self.setMarker = function() {
         self.marker().setAnimation(google.maps.Animation.BOUNCE);
@@ -63,13 +68,31 @@ function APIViewModel() {
     var self = this;
     self.ViewArray = ko.observableArray();
     self.typeArray = ko.observableArray();
-    self.SearchingParameter = ko.observable(new SearchModel('', 0, 2000, '', ''));
+    self.selected = ko.observable(null);
+    self.map = ko.observable(null);
+    self.SearchingParameter = ko.observable(new SearchModel('', 'restaurant', 3000, '', ''));
+    self.setMap = function(map) {
+        self.map(map);
+    };
     self.getViewArray = function() {
         return self.ViewArray;
     };
-    self.pushViewArray = function(name, marker) {
-        var element = new ViewListElement(name, marker);
+    self.pushViewArray = function(name, marker, info) {
+
+        // marker.setAttribute('data-bind', '\'click: $parent.showDetails()\'');
+        var element = new ViewListElement(name, marker, info, self.map());
+        marker.addListener('click', self.clearView);
+        marker.addListener('click', element.showDetails);
+        // element.marker().addListener('click', element.showDetails());
         self.getViewArray().push(element);
+    };
+    self.clearView = function() {
+        var va = self.ViewArray();
+        for(var i=0; i<va.length; i++) {
+            va[i].displayFlag(false);
+            va[i].info().setMap(null);
+            va[i].marker().setAnimation(null);
+        }
     };
     self.clearList = function() {
         self.ViewArray([]);
@@ -102,58 +125,23 @@ function getVenuesId(self) {
         dataType: 'json',
         success: function (data) {
             if(data['response']['venues'].length==0) {
-                console.log("no results found");
+                console.log('no results found');
             }
             else {
-                if (data['response']['venues'][0]['id']!=null) {
-                    var id = data['response']['venues'][0]['id'];
-                    getVenuesDetail(self, id);
+                if (data['response']['venues'].length>0) {
+                    var address = data['response']['venues'][0]['location']['formattedAddress'];
+                    var name = data['response']['venues'][0]['name'];
+                    console.log(address);
+                    console.log(name);
+                    self.info().setContent(name);
+                    self.detail(new detailModel(name, address, null, null, null, true));
+                    self.resultFlag(true);
                 }
                 else {
-                    console.log("no id found");
+                    console.log('no id found');
+                    self.resultFlag(false);
                 }
             }
-        },
-        error: function (xhr, ajaxOptions, thrownError) {
-            if (status == 'timeout') {
-                // timeout -> reload the page and try again
-                console.log('timeout');
-                window.location.reload();
-            } else {
-                // another error occured  
-                alert('error: ' + xhr + ajaxOptions + thrownError);
-            }
-        }
-    });
-}
-
-function getVenuesDetail(self, id) {
-    var searchUrl = venuesHeader+
-                    id+
-                    '?client_id='+
-                    client_id+
-                    '&client_secret='+
-                    client_secret+
-                    '&v=20180323';
-    console.log(searchUrl);
-    $.ajax({ 
-        type: 'GET',
-        url: searchUrl,
-        dataType: 'json',
-        success: function (data) {
-            console.log('detail');
-            console.log(data);
-            var venue = data['response']['venue'];
-            var address = venue['location']['formattedAddress'];
-            var url = venue['url'];
-            var description = venue['description'];
-            var image = venue['bestPhoto']['prefix']+'300x300'+venue['bestPhoto']['suffix'];
-            console.log(address);
-            console.log(url);
-            console.log(description);
-            console.log(image);
-            self.detail(new detailModel(address, url, description, image));
-            self.detailExisit(true);
         },
         error: function (xhr, ajaxOptions, thrownError) {
             if (status == 'timeout') {

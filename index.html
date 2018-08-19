@@ -57,31 +57,26 @@
                     <div class="result-div col-12" data-bind="foreach: ViewArray">
                         <div class="row my-2">
                             <div class="col-12">
-                                <div class="text-light" data-bind="text: marker().title, event: { click: showDetails, mouseover: setMarker, mouseout: resetMarker }"></div>
+                                <div class="text-light" data-bind="text: marker().title, event: { click: function() { $parent.clearView(); showDetails() }, mouseover: setMarker, mouseout: resetMarker }"></div>
                             </div>
-                            <div class="col-12 text-light" data-bind="visible: detailFlag">
-                                <!--
-                                <div class="row visable: detail().displayFlag">
-                                    <div class="col-12 text-light">Umm.. I am sry I didnt find result</div>
-                                </div>
-                                -->
-                                <div class="row visable: detail().displayFlag">
-                                    <div class="media col-12">
-                                        <picture>
-                                            <img class="img-fluid" data-bind="attr: {src: detail().image}"></img>
-                                        </picture>
+                            <div class="col-12 text-light" data-bind="visible: displayFlag">
+                                <div class="row visable: resultFlag">
+                                    <div class="col-12 text-light" data-bind="text: detail().name"></div>
+                                    <div class="col-12 text-light" data-bind="foreach: detail().address">
+                                        <div class="col-12 text-light" data-bind="text: $data"></div>
                                     </div>
-                                    <div class="col-12 text-light" data-bind="text: detail().address"></div>
-                                    <a class="col-12 text-light" data-bind="attr: { href: detail().url, title: detail().url }, text: detail().url"></a>
-                                    <div class="col-12 text-light" data-bind="text: detail().description"></div>
+                                </div>
+                                <div class="col-12 text-light" data-bind="visible: !resultFlag()">
+                                    Not found.
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
                 </div>
             </div>
-            <div class="col-9">
+            <div class="col-9 px-0">
                 <div id="map">
                 </div>
             </div>
@@ -92,11 +87,11 @@
 
     
 
- 
+
     <script src="js/map.js"></script>
     <script>
         ko.applyBindings(viewModel);
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCb9SKRPljSMwecS30dmfvNttqcCMfgmrQ&callback=initMap" async defer></script>
-   </body>
+    </body>
 </html>

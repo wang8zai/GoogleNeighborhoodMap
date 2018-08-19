@@ -1,4 +1,4 @@
-var map, infoWindow;
+var map;
 var selectedMarker;
 function initMap() {
 
@@ -7,7 +7,8 @@ function initMap() {
         center: {lat: -34.397, lng: 150.644},
         zoom: 10
     });
-    infoWindow = new google.maps.InfoWindow;
+    viewModel.setMap(map);
+    var infoWindow = new google.maps.InfoWindow;
 
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
@@ -18,11 +19,13 @@ function initMap() {
             };
             viewModel.SearchingParameter().CurrentPosition(pos);
             infoWindow.setPosition(pos);
-            infoWindow.setContent('Location found.');
-            //        infoWindow.open(map);
+            infoWindow.setContent('You are here');
+            infoWindow.open(map);
+//            infoWindow.open(null);
             map.setCenter(pos);
 
             var marker = makeMarker(pos, 'You are here', 0, 'blue');
+            SearchPlaces();
         }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
         });
@@ -95,13 +98,19 @@ function createMarkersForPlaces(places) {
         // Create a marker for each place.
         var marker = makeMarker(place.geometry.location, place.name, place.id, 'red');
         marker.addListener('click', toggleBounce);
+
+
+        var infow = new google.maps.InfoWindow;
+        infow.setPosition(place.geometry.location);
+        infow.setContent('Not found in foursquare');
+        infow.open(null);
         /*
         // If a marker is clicked, do a place details search on it in the next function.
         marker.addListener('click', function() {
             getPlacesDetails(this, place);
         });
         */
-        viewModel.pushViewArray(place.name, marker);
+        viewModel.pushViewArray(place.name, marker, infow);
         //        placeMarkers.push(marker);
         if (place.geometry.viewport) {
             // Only geocodes have viewport.
