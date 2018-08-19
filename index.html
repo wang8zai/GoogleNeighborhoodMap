@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang=EN>
+
+    <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <script type='text/javascript' src='http://knockoutjs.com/downloads/knockout-3.4.2.js'></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="js/MVVM.js"></script>
+    </head>
+
+    <body>
+
+    <div class="container-fluid w-100 h-100">
+        <div class="row h-100">
+            <div class="col-3 bg-danger h-100">
+                <div data-spy="scroll" class="container-fluid left-bar h-100">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <img class="turtle-logo" src="images/Logo2-extra-small-0.5x.png" alt="A turtle logo designed by me.">
+                    </div>
+                    <div class="search-div col-12">
+                        <!--
+                        <div class="input-group">
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="input-location">location</span>
+                            </div>
+                            <input id="location" type="text" data-bind="value: SearchingParameter().location" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                        </div>
+                        -->
+                        <div class="input-group">
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="input-radius">radius</span>
+                            </div>   
+                            <input id="radius" type="text" data-bind="value: SearchingParameter().radius" class="form-control" aria-label="Sizing example input" aria-describedby="input-radius">
+                        <div class="input-group">
+                        </div>                     
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="input-filter">filter</span>
+                            </div>
+                            <input id="filter" type="text" data-bind="value: SearchingParameter().filter" class="form-control" aria-label="Sizing example input" aria-describedby="input-filter">
+                        </div>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="PlaceType">Type</label>
+                            </div>
+                            <select class="custom-select" data-bind="options: typeArray, optionsText: 'name', optionsValue: 'name', value: SearchingParameter().mode">
+                            </select>  
+                        </div>
+                        <input id="destination-search" type="button" value="Search">
+                    </div>
+                    <div class="result-div col-12" data-bind="foreach: ViewArray">
+                        <div class="row my-2">
+                            <div class="col-12">
+                                <div class="text-light" data-bind="text: marker().title, event: { click: showDetails, mouseover: setMarker, mouseout: resetMarker }"></div>
+                            </div>
+                            <div class="col-12 text-light" data-bind="visible: detailFlag">
+                                <!--
+                                <div class="row visable: detail().displayFlag">
+                                    <div class="col-12 text-light">Umm.. I am sry I didnt find result</div>
+                                </div>
+                                -->
+                                <div class="row visable: detail().displayFlag">
+                                    <div class="media col-12">
+                                        <picture>
+                                            <img class="img-fluid" data-bind="attr: {src: detail().image}"></img>
+                                        </picture>
+                                    </div>
+                                    <div class="col-12 text-light" data-bind="text: detail().address"></div>
+                                    <a class="col-12 text-light" data-bind="attr: { href: detail().url, title: detail().url }, text: detail().url"></a>
+                                    <div class="col-12 text-light" data-bind="text: detail().description"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="col-9">
+                <div id="map">
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+
+    
+
+ 
+    <script src="js/map.js"></script>
+    <script>
+        ko.applyBindings(viewModel);
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCb9SKRPljSMwecS30dmfvNttqcCMfgmrQ&callback=initMap" async defer></script>
+   </body>
+</html>
