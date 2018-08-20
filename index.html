@@ -79,18 +79,13 @@
                 <div id="map">
                 </div>
             </div>
-        </div>
-
-        
+        </div>        
     </div>
-
-    
-
 
     <script src="js/map.js"></script>
     <script>
         ko.applyBindings(viewModel);
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCb9SKRPljSMwecS30dmfvNttqcCMfgmrQ&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCb9SKRPljSMwecS30dmfvNttqcCMfgmrQ&callback=initMap" onerror="loadingError()" async defer></script>
     </body>
 </html>

@@ -145,3 +145,7 @@ function toggleBounce() {
     }
     selectedMarker=self;
 }
+
+window.loadingError = function(){
+    alert('google js loading error');
+};
