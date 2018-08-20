@@ -3,6 +3,8 @@ var Types = ['library', 'restaurant', 'store','bank','museum','bar'];
 var venuesHeader = 'https://api.foursquare.com/v2/venues/';
 var client_id = 'P5MTQTPUXEAD1FEEU2OJ52ANWUKKBG2TMOWGPR4FNGCLZLEC';
 var client_secret = 'TUTJJSHCLWMZ3OGFOXI4UIO3DBEJMJRVP1TDASVRZCGBSA3P';
+// search model. mainly store the searching parameters.
+// mode is the type of the place like what in Types.
 function SearchModel(location, mode, radius, filter, pos) {
     var self = this;
     self.location = ko.observable(location);
@@ -12,12 +14,15 @@ function SearchModel(location, mode, radius, filter, pos) {
     self.CurrentPosition = ko.observable(pos);
 }
 
+// option model. a helper for Types.
 function optionModel(id,name){
     var self = this;
     self.id = ko.observable(id);
     self.name = ko.observable(name);
 }
 
+// detail model. inside each arrayElement
+// holds detail from foursquare.
 function detailModel(name, address, url, description, image) {
     var self = this;
     self.name = ko.observable(name);
@@ -27,6 +32,8 @@ function detailModel(name, address, url, description, image) {
     self.image = ko.observable(image);
 }
 
+// view list element model.
+// mainly used to hold marker, infowindow and detail.
 function ViewListElement(name, marker, info, map) {
     var self = this;
     self.name = ko.observable(name);
@@ -64,6 +71,8 @@ function ViewListElement(name, marker, info, map) {
     };
 }
 
+// api view model. main model.
+// hold all infomation in this view model.
 function APIViewModel() {
     var self = this;
     self.ViewArray = ko.observableArray();
@@ -104,10 +113,13 @@ function APIViewModel() {
     };
 }
 
+// 3rd party API foursquare
+// helper function to get data from foursquare.
 function getVenuesId(self) {
     var pos = self.marker().position;
     var lat = pos.lat();
     var lng = pos.lng();
+    // build endpoint url
     var searchVenues = venuesHeader+
                        'search?client_id='+
                        client_id+
@@ -119,6 +131,7 @@ function getVenuesId(self) {
                        '&limit=1';
     var res = encodeURI(searchVenues);
     console.log(res);
+    // send request.
     $.ajax({ 
         type: 'GET',
         url: res,
@@ -143,6 +156,7 @@ function getVenuesId(self) {
                 }
             }
         },
+        // handle error. if error alert.
         error: function (xhr, ajaxOptions, thrownError) {
             if (status == 'timeout') {
                 // timeout -> reload the page and try again
@@ -155,5 +169,5 @@ function getVenuesId(self) {
         }
     });
 }
-
+//init model.
 viewModel.initTypeArray();

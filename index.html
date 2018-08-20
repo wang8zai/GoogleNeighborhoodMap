@@ -2,7 +2,9 @@
 <html lang=EN>
 
     <head>
-    <title>Simple Map</title>
+    <title>Google Neiborhood Map</title>
+    <meta name="description" content="Udacity Google Negiborhood Map project" />
+    <meta name="Shang Wang" content="Shang_Wang.com">
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/main.css">
@@ -11,6 +13,11 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+   
+	<!-- Map Icons -->
+	<link rel="stylesheet" type="text/css" href="map-icons-master/dist/css/map-icons.css">
+    <script type="text/javascript" src="map-icons-master/dist/js/map-icons.js"></script>
+    
     <script src="js/MVVM.js"></script>
     </head>
 
@@ -18,21 +25,13 @@
 
     <div class="container-fluid w-100 h-100">
         <div class="row h-100">
-            <div class="col-3 bg-danger h-100">
-                <div data-spy="scroll" class="container-fluid left-bar h-100">
-                <div class="row">
-                    <div class="col-12 text-center">
+            <div class="col-12 col-sm-4 col-md-3 bg-danger px-0 search-div">
+                <div data-spy="scroll" class="container-fluid left-bar h-100 mx-0">
+                <div class="row px-0">
+                    <div class="col-12 text-center mx-auto py-3">
                         <img class="turtle-logo" src="images/Logo2-extra-small-0.5x.png" alt="A turtle logo designed by me.">
                     </div>
-                    <div class="search-div col-12">
-                        <!--
-                        <div class="input-group">
-                            <div class="input-group-append">
-                                <span class="input-group-text" id="input-location">location</span>
-                            </div>
-                            <input id="location" type="text" data-bind="value: SearchingParameter().location" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
-                        </div>
-                        -->
+                    <div class="search-div col-12 mx-0">
                         <div class="input-group">
                             <div class="input-group-append">
                                 <span class="input-group-text" id="input-radius">radius</span>
@@ -54,29 +53,29 @@
                         </div>
                         <input id="destination-search" type="button" value="Search">
                     </div>
-                    <div class="result-div col-12" data-bind="foreach: ViewArray">
-                        <div class="row my-2">
-                            <div class="col-12">
-                                <div class="text-light" data-bind="text: marker().title, event: { click: function() { $parent.clearView(); showDetails() }, mouseover: setMarker, mouseout: resetMarker }"></div>
+                    <div class="result-div col-12 mx-0 text-light" data-bind="foreach: ViewArray">
+                        <div class="result-div-single row my-2">
+                            <div class="col-12 mx-0">
+                                <div class="col-12" data-bind="text: marker().title, event: { click: function() { $parent.clearView(); showDetails() }, mouseover: setMarker, mouseout: resetMarker }"></div>
                             </div>
-                            <div class="col-12 text-light" data-bind="visible: displayFlag">
-                                <div class="row visable: resultFlag">
-                                    <div class="col-12 text-light" data-bind="text: detail().name"></div>
-                                    <div class="col-12 text-light" data-bind="foreach: detail().address">
-                                        <div class="col-12 text-light" data-bind="text: $data"></div>
+                            <!--3rd party API foursquare data bind here.-->
+                            <div class="col-12 mx-0" data-bind="visible: displayFlag">
+                                <div class="row mx-0 visable: resultFlag">
+                                    <div class="col-12 mx-0" data-bind="text: detail().name"></div>
+                                    <div class="col-12 px-0" data-bind="foreach: detail().address">
+                                        <div class="col-12" data-bind="text: $data"></div>
                                     </div>
                                 </div>
-                                <div class="col-12 text-light" data-bind="visible: !resultFlag()">
+                                <div class="col-12" data-bind="visible: !resultFlag()">
                                     Not found.
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
                 </div>
             </div>
-            <div class="col-9 px-0">
+            <div class="col-12 col-sm-8 col-md-9 px-0">
                 <div id="map">
                 </div>
             </div>

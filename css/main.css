@@ -22,10 +22,11 @@ html {
 
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  height: 100vw;
 }
 
 .main {
-  width: 90vw;
+  height: 576px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -129,10 +130,30 @@ html, body {
   overflow-y: scroll;
 }
 
+.result-div-single:hover {
+  background-color: white;
+  color: #dc3545;
+}
+
+.search-div {
+  height: 100%;
+}
+
 @media(max-width:576px){
   .main {
     width: 100vw;
     margin-left: auto;
     margin-right: auto;
   }
+  
+  .search-div {
+    height: 50%;
+  }
+}
+
+@media(max-width:576px) {
+  #map {
+    height: 100vw;
+  }
+  
 }

@@ -1,5 +1,7 @@
 var map;
 var selectedMarker;
+
+// init map. place the marker where you are.
 function initMap() {
 
     document.getElementById('destination-search').addEventListener('click', SearchPlaces);
@@ -21,10 +23,10 @@ function initMap() {
             infoWindow.setPosition(pos);
             infoWindow.setContent('You are here');
             infoWindow.open(map);
-//            infoWindow.open(null);
             map.setCenter(pos);
 
-            var marker = makeMarker(pos, 'You are here', 0, 'blue');
+            var marker = makeMarker(pos, 'You are here', 0, '#f49842', mapIcons.shapes.MAP_PIN, 'male');
+
             SearchPlaces();
         }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
@@ -79,6 +81,7 @@ function setMarkers(mk, m) {
     }
 }
 
+// createmarkers.
 function createMarkersForPlaces(places) {
     setMarkers(viewModel.getViewArray(), null);
     viewModel.clearList();
@@ -86,30 +89,16 @@ function createMarkersForPlaces(places) {
     //    bounds = map.getBounds();
     for (var i = 0; i < places.length; i++) {
         var place = places[i];
-        /*
-        var icon = {
-        url: place.icon,
-        size: new google.maps.Size(35, 35),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(15, 34),
-        scaledSize: new google.maps.Size(25, 25)
-        };
-        */
         // Create a marker for each place.
-        var marker = makeMarker(place.geometry.location, place.name, place.id, 'red');
+        var marker = makeMarker(place.geometry.location, place.name, place.id, '#38e0b3', mapIcons.shapes.MAP_PIN, 'walking');
         marker.addListener('click', toggleBounce);
 
-
+        // init info window.
         var infow = new google.maps.InfoWindow;
         infow.setPosition(place.geometry.location);
         infow.setContent('Not found in foursquare');
         infow.open(null);
-        /*
-        // If a marker is clicked, do a place details search on it in the next function.
-        marker.addListener('click', function() {
-            getPlacesDetails(this, place);
-        });
-        */
+
         viewModel.pushViewArray(place.name, marker, infow);
         //        placeMarkers.push(marker);
         if (place.geometry.viewport) {
@@ -123,21 +112,27 @@ function createMarkersForPlaces(places) {
     map.fitBounds(bounds);
 }
 
-function makeMarker(pos, title, id, color) {
-//    var icon = 'http://maps.google.com/mapfiles/ms/icons/'+color+'-dot.png';
-//    icon = new google.maps.MarkerLabel({color: '#242f3e'});
-    icon = null;
-    var rtn = new google.maps.Marker({
+// make marker . input position, name, id, color, shape, type.
+function makeMarker(pos, title, id, color, shape, type) {
+    var rtn = new mapIcons.Marker({
         map: map,
         position: pos,
         title: title,
         animation: google.maps.Animation.DROP,
-        //        icon: icon,
-        id: id
+        id: id,
+        icon: {
+            path: shape,
+            fillColor: color,
+            fillOpacity: 1,
+            strokeColor: '',
+            strokeWeight: 0
+        },
+        map_icon_label: '<span class="map-icon map-icon-'+type+'"></span>'
     });
     return rtn;
 }
 
+// toggle the marker when clicked.
 function toggleBounce() {
     var self = this;
     if(selectedMarker!=null && selectedMarker!=self) {
